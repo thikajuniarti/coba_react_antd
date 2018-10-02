@@ -26,8 +26,8 @@ const DataList = () => (
     query={gql`
       {
         me {
-      		fullName
-      	}
+          fullName
+        }
       }
     `}
   >
@@ -44,7 +44,7 @@ const DataList = () => (
             },
             pageSize: 3,
           }}
-          dataSource={data.me}
+          dataSource={[data.me]}
           footer={<div><b>ant design</b> footer part</div>}
           renderItem={item => (
             <List.Item

@@ -1,6 +1,7 @@
 import { ApolloProvider } from "react-apollo";
 import { ApolloClient } from 'apollo-client';
-import { HttpLink } from 'apollo-link-http';
+import { createHttpLink } from 'apollo-link-http';
+import { setContext } from 'apollo-link-context';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import React, { Component } from 'react';
 import { RoutePage } from './breadcrumb/RoutePage';
@@ -12,18 +13,13 @@ import './App.css';
 
 const { Header, Sider, Content } = Layout;
 
-const cors = require('cors');
-
-const token = "9edc9546a263e4238d24d5d29a266f09";
+const token = '9edc9546a263e4238d24d5d29a266f09';
 
 const client = new ApolloClient({
-  link: new HttpLink({
+  link: new createHttpLink({
     uri: `http://192.168.1.64:3000/graphql`,
-    fetchOptions: {
-      mode: `no-cors`,
-    },
-    header: {
-      auth_token: `${token}`
+    headers: {
+      Authorization: `Bearer ${token}`
     }
   }),
   cache: new InMemoryCache()
