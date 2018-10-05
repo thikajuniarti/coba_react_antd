@@ -1,6 +1,6 @@
 import React from 'react';
 import { List, Icon } from 'antd';
-import { Query, ApolloConsumer } from "react-apollo";
+import { Query } from "react-apollo";
 import gql from "graphql-tag";
 
 const listData = [];
@@ -24,16 +24,16 @@ const IconText = ({ type, text }) => (
 const DataList = () => (
   <Query
     query={gql`
-      query users($cursor: String){
-        users(first: 20, after: $cursor) {
+      query users($offset: Int){
+        users(first: 5, offset: $offset) {
           edges{
             node {
+							id
               fullName
             }
           }
-          pageInfo{
-						endCursor
-					}
+          totalCount
+          currentPagesDataCount
         }
       }
     `}
@@ -41,7 +41,7 @@ const DataList = () => (
     {({ loading, error, data: { users: users }, fetchMore}) => {
       if (loading) return <p>Loading...</p>;
       if (error) return `${error}`;
-      console.log(users);
+
       return(
         <List
           itemLayout="vertical"
@@ -50,25 +50,26 @@ const DataList = () => (
             onChange: (page) => {
               fetchMore({
                 variables: {
-                  cursor: users.pageInfo.endCursor
+                  offset: (page - 1) * 5
                 },
-                updateQuery: (previousResult, { fetchMoreResult }) => {
+                updateQuery: (previous, { fetchMoreResult }) => {
                   const newEdges = fetchMoreResult.users.edges;
-                  const pageInfo = fetchMoreResult.users.pageInfo;
+                  const totalCount = previous.users.totalCount;
+                  const currentPagesDataCount = fetchMoreResult.users.currentPagesDataCount;
 
-                  return newEdges.length ?
-                    {
-                      users: {
-                        __typename: previousResult.users.__typename,
-                        edges: [...previousResult.users.edges, ...newEdges],
-                        pageInfo
-                      }
-                    } : previousResult
-                  console.log(newEdges);
+                  return {
+                    users: {
+                      __typename: previous.users.__typename,
+                      edges: newEdges,
+                      totalCount,
+                      currentPagesDataCount
+                    }
+                  }
                 }
               })
             },
-            pageSize: 10,
+            pageSize: users.currentPagesDataCount,
+            total: users.totalCount,
           }}
           dataSource={users.edges}
           footer={<div><b>ant design</b> footer part</div>}
@@ -91,82 +92,10 @@ const DataList = () => (
   </Query>
 );
 
-const DataList2 = (data) => {
-  console.log(data.data);
-  return <List
-    itemLayout="vertical"
-    size="large"
-    pagination={{
-      onChange: (page) => {
-        console.log(page);
-      },
-      pageSize: 3,
-    }}
-    dataSource={data.data.users.edges}
-    footer={<div><b>ant design</b> footer part</div>}
-    renderItem={item => (
-      <List.Item
-        key={item.node.fullName}
-        actions={[<IconText type="star-o" text="156" />, <IconText type="like-o" text="156" />, <IconText type="message" text="2" />]}
-        extra={<img width={272} alt="logo" src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png" />}
-      >
-        <List.Item.Meta
-          title={<a href={item.node.fullName}>{item.node.fullName}</a>}
-          description={item.node.fullName}
-        />
-        {item.node.fullName}
-      </List.Item>
-    )}
-  />
-}
-
 export class Home extends React.Component {
-  constructor(props){
-    super(props)
-    this.state = {
-      datauser: []
-    }
-  }
-
-  state = {
-    datalist: []
-  }
-
-  async componentDidMount(){
-    const data = await this.aclient.query({
-      query: gql`
-        query users($cursor: String){
-          users(first: 20, after: $cursor) {
-            edges{
-              node {
-                fullName
-              }
-            }
-            pageInfo{
-              endCursor
-            }
-          }
-        }
-      `
-    })
-    this.setState({
-      datauser: data
-    })
-  }
-
   render(){
-    // const datalist2 = ()
     return(
       <DataList />
-      // <div>
-      //   <ApolloConsumer>
-      //     {client => {
-      //       this.aclient = client;
-      //       return null;
-      //     }/* do stuff here */}
-      //   </ApolloConsumer>
-      //   <DataList2 data={this.state.datauser}/>
-      // </div>
     );
   }
 }
