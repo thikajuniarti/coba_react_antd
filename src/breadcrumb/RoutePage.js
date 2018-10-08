@@ -6,6 +6,7 @@ import { Master2 } from '../page/Master2';
 import { Master3 } from '../page/Master3';
 import { Master4 } from '../page/Master4';
 import { Master5 } from '../page/Master5';
+import { Master6 } from '../page/Master6';
 
 const Homepage = () => (
   <Home />
@@ -31,6 +32,10 @@ const Masterpage5 = () => (
   <Master5 />
 );
 
+const Masterpage6 = () => (
+  <Master6 />
+);
+
 export class RoutePage extends React.Component {
   render(){
     return (
@@ -42,6 +47,7 @@ export class RoutePage extends React.Component {
           <Route path="/master3" component={Masterpage3} />
           <Route path="/master4" component={Masterpage4} />
           <Route path="/master5" component={Masterpage5} />
+          <Route path="/master6" component={Masterpage6} />
         </main>
       </Router>
     );

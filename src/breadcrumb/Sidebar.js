@@ -17,6 +17,7 @@ export class Sidebar extends React.Component {
             <Menu.Item key="master3"><a href="/master3">Master 3</a></Menu.Item>
             <Menu.Item key="master4"><a href="/master4">Master 4</a></Menu.Item>
             <Menu.Item key="master5"><a href="/master5">Master 5</a></Menu.Item>
+            <Menu.Item key="master6"><a href="/master6">Master 6</a></Menu.Item>
           </SubMenu>
           <Menu.Item key="/"><Icon type="logout" />Sign Out</Menu.Item>
         </Menu>
