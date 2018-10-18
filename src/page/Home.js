@@ -2,17 +2,7 @@ import React from 'react';
 import { List, Icon } from 'antd';
 import { Query } from "react-apollo";
 import gql from "graphql-tag";
-
-const listData = [];
-for (let i = 0; i < 23; i++) {
-  listData.push({
-    href: 'http://ant.design',
-    title: `ant design part ${i}`,
-    avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-    description: 'Ant Design, a design language for background applications, is refined by Ant UED Team.',
-    content: 'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-  });
-}
+import './Home.css'
 
 const IconText = ({ type, text }) => (
   <span>
@@ -25,7 +15,7 @@ const DataList = () => (
   <Query
     query={gql`
       query users($offset: Int){
-        users(first: 5, offset: $offset) {
+        users(first: 5, params: { offset: $offset }) {
           edges{
             node {
 							id
